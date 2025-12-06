@@ -1,0 +1,10 @@
+# IDE (PyCharm) ayar klasörü - Bunu kesinlikle ignore etmeliyiz
+.idea/
+
+# Python derleme dosyaları - Bunlar gereksiz kalabalıktır
+__pycache__/
+*.pyc
+
+# Eğer sanal ortam (virtual environment) kurarsan diye
+venv/
+.venv/
