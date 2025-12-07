@@ -1,4 +1,4 @@
-SIDE = 800
+SIDE = 600
 ROWS = 50
 
 # region Colors
