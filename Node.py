@@ -39,5 +39,8 @@ class Node:
         the new status of the node """
         self.color = color
 
+    def heuristic(self, other):
+        """ Returns the Manhattan Distance between the nodes: self and other """
+        return abs(self.x - other.x) + abs(self.y - other.y)
     
 
