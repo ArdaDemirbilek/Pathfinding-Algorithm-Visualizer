@@ -1,3 +1,4 @@
+import pygame
 # region Colors
 
 background_color      = (15, 15, 26)
@@ -42,5 +43,8 @@ class Node:
     def heuristic(self, other):
         """ Returns the Manhattan Distance between the nodes: self and other """
         return abs(self.x - other.x) + abs(self.y - other.y)
-    
+
+    def draw(self, win, side):
+        """ The function which makes possible to draw each squares given its location and color """
+        pygame.draw.rect(win, self.color, (self.x, self.y, side, side))
 
