@@ -1,14 +1,12 @@
 import pygame
 from Node import Node
-
-WIDTH = 800
-ROWS = 50
+from settings import SIDE, ROWS
 
 class Grid:
     def __init__(self):
-        self.side = WIDTH
+        self.side = SIDE
         self.total_rows = ROWS
-        self.node_side = WIDTH / ROWS
+        self.node_side = SIDE / ROWS
         self.nodes = []
 
     def make_grid(self):

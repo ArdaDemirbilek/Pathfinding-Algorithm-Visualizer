@@ -1,9 +1,7 @@
 import pygame
+from settings import SIDE
 
-WIDTH = 800
-ROWS = 50
-
-WIN = pygame.display.set_mode((WIDTH, WIDTH))
+WIN = pygame.display.set_mode((SIDE, SIDE))
 pygame.display.set_caption("A* Path Finding Algorithm")
 
 
