@@ -34,3 +34,10 @@ class Node:
         elif self.color == frontier_color: return 3
         else: return 4 # walkable
 
+    def change_status(self, color):
+        """ Given the color input the function changes the color attribute to track
+        the new status of the node """
+        self.color = color
+
+    
+
