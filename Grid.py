@@ -1,6 +1,7 @@
 import pygame, random
 from Node import Node
-from settings import SIDE, ROWS, background_color, grid_color, wall_color, walkable_color, visited_color
+from settings import SIDE, ROWS
+from settings import background_color, wall_color, walkable_color, visited_color, final_path_color, start_color, goal_color
 
 class Grid:
     def __init__(self):
@@ -9,7 +10,7 @@ class Grid:
         self.node_side = SIDE / ROWS
         self.nodes = []
 
-    def make_grid(self):
+    def make_grid(self, start_node, end_node):
         """ Fills the self.nodes attribute by creating default Node Objects with row, column numbers
         and x,y coordinates """
         for i in range(self.total_rows):
@@ -18,45 +19,46 @@ class Grid:
                 # Column shifting is made possible by j*self.node_size
                 # Row shifting is made possible by i*self.node_size
                 self.nodes[i].append(Node(i, j, j*self.node_side, i*self.node_side))
+        row1, col1 = start_node
+        self.nodes[row1][col1].color = start_color
+        row2, col2 = end_node
+        self.nodes[row2][col2].color = goal_color
 
     def draw(self, win):
-        """ Generates the Visual Representation of our Grid at each Entry
-        to the Game Loop """
+        """Draws the grid:
+        - Fills background
+        - Draws each cell with its current color (walkable / visited / path / start / goal)
+        - Draws maze walls based on the neighbors array
+        """
         win.fill(background_color)
-        for row in self.nodes: # Draws rectangles for each node in self.nodes attribute
+        s = self.node_side
+        for row in self.nodes:
             for node in row:
-                node.draw(win, self.node_side)
-        for row in self.nodes: # Draws the edges of nodes regarding any barrier exists or not
+                node.draw(win, s) # Fill each nodes' area with walkable_color
+
+        # Draw the Edges
+        for row in self.nodes:
             for node in row:
-                # Up Neighbor
-                if node.neighbors[0] == 0: # 0 -> Up
-                    pygame.draw.line(win, wall_color,
-                    (node.x, node.y), (node.x + self.node_side, node.y), width=4)
-                else:
-                    # If both nodes are visited no need for a walkable color line
-                    # Just use the visited color for the line in between
-                    if node.color == visited_color and self.nodes[node.row-1][node.col].color == visited_color:
-                        pygame.draw.line(win, visited_color,
-                        (node.x, node.y), (node.x + self.node_side, node.y), width=4)
-                    else: # If any of the nodes has not been visited use walkable color
-                        pygame.draw.line(win, walkable_color,
-                        (node.x, node.y), (node.x + self.node_side, node.y), width=4)
-                # Left Neighbor
-                if node.neighbors[3] == 0: # 3 -> Left
-                    pygame.draw.line(win, wall_color,
-                    (node.x, node.y), (node.x, node.y + self.node_side), width=4)
-                else:
-                    # If both nodes are visited no need for a walkable color line
-                    # Just use the visited color for the line in between
-                    if node.color == visited_color and self.nodes[node.row][node.col-1].color == visited_color:
-                        pygame.draw.line(win, visited_color,
-                                         (node.x, node.y), (node.x, node.y + self.node_side), width=4)
-                    else:  # If any of the nodes has not been visited use walkable color
-                        pygame.draw.line(win, walkable_color,
-                                         (node.x, node.y), (node.x, node.y + self.node_side), width=4)
+                x, y = node.x, node.y
+                r, c = node.row, node.col
 
-        pygame.display.update() # After changes the display needs to be updated
-
+                # UP: 0
+                if node.neighbors[0] == 0: # = 0 means that there is a wall inbetween
+                    pygame.draw.line(win, wall_color,
+                    (x, y), (x + s, y), width=2)
+                # LEFT: 3
+                if node.neighbors[3] == 0: # = 0 means that there is a wall inbetween
+                    pygame.draw.line(win, wall_color,
+                    (x, y), (x, y + s), width=2)
+                # DOWN: 2
+                if r == self.total_rows - 1 and node.neighbors[2] == 0:
+                    pygame.draw.line(win, wall_color,
+                    (x, y + s), (x + s, y + s), width=2)
+                # RIGHT: 1
+                if c == self.total_rows - 1 and node.neighbors[1] == 0:
+                    pygame.draw.line(win, wall_color,
+                                     (x + s, y), (x + s, y + s), width=2)
+        pygame.display.update()
 
     def maze_generator(self):
         """ Generates a maze structure by modifying the neighbors of each node.

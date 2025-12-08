@@ -10,8 +10,9 @@ pygame.display.set_caption("A* Path Finding Algorithm")
 def main():
     start, end = None, None
     run, started = True, False
+    start_node, end_node = (0,0), (ROWS-1, ROWS-1)
     grid = Grid()
-    grid.make_grid()
+    grid.make_grid(start_node, end_node)
     maze_generated = False
     while run:
         grid.draw(WIN) # At each entry to the loop we revisualize the grid
@@ -25,7 +26,6 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and maze_generated:
                     dijkstra_unweighted(WIN, grid, (0,0), (ROWS-1, ROWS-1))
-
 
     pygame.quit()
 

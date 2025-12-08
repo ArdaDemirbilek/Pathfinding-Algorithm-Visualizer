@@ -35,4 +35,3 @@ class Node:
     def draw(self, win, side):
         """ The function which makes possible to draw each squares given its location and color """
         pygame.draw.rect(win, self.color, (self.x, self.y, side, side))
-

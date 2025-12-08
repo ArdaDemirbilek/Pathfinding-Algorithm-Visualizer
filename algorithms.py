@@ -23,7 +23,7 @@ def dijkstra_unweighted(win, grid, start, end):
         current_dist, r, c = heapq.heappop(pq)
         current_node = grid.nodes[r][c]
         if (r, c) == end: # If we reach the destination
-            reconstruct_path(came_from, end_node, win, grid.node_side)
+            reconstruct_path(came_from, end_node, win, grid.node_side, grid)
             return True
         # If the distance from the queue is greater, then we can skip it
         if current_dist > distances[current_node]:
@@ -34,7 +34,7 @@ def dijkstra_unweighted(win, grid, start, end):
             current_node.change_status(visited_color)
             grid.draw(win)
             pygame.display.update()
-            pygame.time.delay(50) # A little delay for better representation
+            pygame.time.delay(10) # A little delay for better representation
 
         # Visiting Neighbors
         directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # (row_change, col_change)
@@ -57,11 +57,12 @@ def dijkstra_unweighted(win, grid, start, end):
     return False # If no path can be found
 
 
-def reconstruct_path(came_from, current, win, node_side):
+def reconstruct_path(came_from, current, win, node_side, grid):
     """ Traverses back to find the shortest path """
     while current in came_from:
         current = came_from[current]
         if current.color != start_color: # Don't color the start node
             current.change_status(final_path_color)
-            current.draw(win, node_side)
+            # current.draw(win, node_side)
+            grid.draw(win)
             pygame.display.update()
