@@ -1,6 +1,6 @@
 import pygame, random
 from Node import Node
-from settings import SIDE, ROWS, background_color, grid_color, wall_color
+from settings import SIDE, ROWS, background_color, grid_color, wall_color, walkable_color, visited_color
 
 class Grid:
     def __init__(self):
@@ -31,17 +31,30 @@ class Grid:
                 # Up Neighbor
                 if node.neighbors[0] == 0: # 0 -> Up
                     pygame.draw.line(win, wall_color,
-                    (node.x, node.y), (node.x + self.node_side, node.y))
+                    (node.x, node.y), (node.x + self.node_side, node.y), width=4)
                 else:
-                    pygame.draw.line(win, grid_color,
-                    (node.x, node.y), (node.x + self.node_side, node.y))
+                    # If both nodes are visited no need for a walkable color line
+                    # Just use the visited color for the line in between
+                    if node.color == visited_color and self.nodes[node.row-1][node.col].color == visited_color:
+                        pygame.draw.line(win, visited_color,
+                        (node.x, node.y), (node.x + self.node_side, node.y), width=4)
+                    else: # If any of the nodes has not been visited use walkable color
+                        pygame.draw.line(win, walkable_color,
+                        (node.x, node.y), (node.x + self.node_side, node.y), width=4)
                 # Left Neighbor
                 if node.neighbors[3] == 0: # 3 -> Left
                     pygame.draw.line(win, wall_color,
-                    (node.x, node.y), (node.x, node.y + self.node_side))
+                    (node.x, node.y), (node.x, node.y + self.node_side), width=4)
                 else:
-                    pygame.draw.line(win, grid_color,
-                    (node.x, node.y), (node.x, node.y + self.node_side))
+                    # If both nodes are visited no need for a walkable color line
+                    # Just use the visited color for the line in between
+                    if node.color == visited_color and self.nodes[node.row][node.col-1].color == visited_color:
+                        pygame.draw.line(win, visited_color,
+                                         (node.x, node.y), (node.x, node.y + self.node_side), width=4)
+                    else:  # If any of the nodes has not been visited use walkable color
+                        pygame.draw.line(win, walkable_color,
+                                         (node.x, node.y), (node.x, node.y + self.node_side), width=4)
+
         pygame.display.update() # After changes the display needs to be updated
 
 

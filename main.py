@@ -1,6 +1,7 @@
 import pygame
-from settings import SIDE
+from settings import SIDE, ROWS
 from Grid import Grid
+from algorithms import dijkstra_unweighted
 
 WIN = pygame.display.set_mode((SIDE, SIDE))
 pygame.display.set_caption("A* Path Finding Algorithm")
@@ -21,6 +22,10 @@ def main():
                 # We need to generate the maze only one time -> 'maze_generated' flag
                 grid.maze_generator()
                 maze_generated = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and maze_generated:
+                    dijkstra_unweighted(WIN, grid, (0,0), (ROWS-1, ROWS-1))
+
 
     pygame.quit()
 
