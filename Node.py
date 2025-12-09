@@ -30,7 +30,9 @@ class Node:
 
     def heuristic(self, other):
         """ Returns the Manhattan Distance between the nodes: self and other """
-        return abs(self.x - other.x) + abs(self.y - other.y)
+        node_x, node_y = self.get_pos()
+        other_x, other_y = other.get_pos()
+        return abs(node_x - other_x) + abs(node_y - other_y)
 
     def draw(self, win, side):
         """ The function which makes possible to draw each squares given its location and color """

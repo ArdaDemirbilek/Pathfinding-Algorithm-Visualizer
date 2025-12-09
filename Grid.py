@@ -98,6 +98,8 @@ class Grid:
                                      (x + s, y), (x + s, y + s), width=2)
         pygame.draw.line(win, wall_color, (WIDTH/2, 0), (WIDTH/2, WIDTH/2), width=6)
 
+        pygame.draw.line(win, wall_color, (WIDTH / 2, 0), (WIDTH / 2, HEIGHT), width=6)
+
         pygame.display.update()
 
     def maze_generator(self):
