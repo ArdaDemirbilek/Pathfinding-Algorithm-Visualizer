@@ -11,9 +11,9 @@ def dijkstra_unweighted(win, grid, start, end):
     is reached, the path is reconstructed via the 'came_from' mapping. Returns
     True if a path exists, otherwise False.
     """
-    distances = {node: float('inf') for row in grid.nodes for node in row}
-    start_node = grid.nodes[start[0]][start[1]] # start = row, col
-    end_node = grid.nodes[end[0]][end[1]] # end = row, col
+    distances = {node: float('inf') for row in grid.nodes1 for node in row}
+    start_node = grid.nodes1[start[0]][start[1]] # start = row, col
+    end_node = grid.nodes1[end[0]][end[1]] # end = row, col
     distances[start_node] = 0 # The distance from start_node to start_node is 0
 
     pq = [(0, start[0], start[1])] # Drop the start_node in priority queue
@@ -21,7 +21,7 @@ def dijkstra_unweighted(win, grid, start, end):
     while pq:
         # Get the element with the least distance from the priority queue
         current_dist, r, c = heapq.heappop(pq)
-        current_node = grid.nodes[r][c]
+        current_node = grid.nodes1[r][c]
         if (r, c) == end: # If we reach the destination
             reconstruct_path(came_from, end_node, win, grid.node_side, grid)
             return True
@@ -44,7 +44,7 @@ def dijkstra_unweighted(win, grid, start, end):
                 next_r, next_c = r + dr, c + dc
                 # Border Check (maze generator does it, but for further security)
                 if 0 <= next_r < grid.total_rows and 0 <= next_c < grid.total_rows:
-                    neighbor_node = grid.nodes[next_r][next_c]
+                    neighbor_node = grid.nodes1[next_r][next_c]
                     new_dist = current_dist + 1
 
                     # If a new, shorter road to neighbor_node is found, push it to priority queue

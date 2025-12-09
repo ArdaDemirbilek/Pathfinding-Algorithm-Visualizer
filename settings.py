@@ -1,4 +1,5 @@
-SIDE = 600
+HEIGHT = 600
+WIDTH = 1200
 ROWS = 50
 
 # region Colors

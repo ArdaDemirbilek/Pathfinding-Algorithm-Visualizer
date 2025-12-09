@@ -1,28 +1,39 @@
 import pygame, random
 from Node import Node
-from settings import SIDE, ROWS
-from settings import background_color, wall_color, walkable_color, visited_color, final_path_color, start_color, goal_color
+from settings import HEIGHT, ROWS, WIDTH
+from settings import background_color, wall_color, start_color, goal_color
 
 class Grid:
     def __init__(self):
-        self.side = SIDE
+        self.side = HEIGHT
         self.total_rows = ROWS
-        self.node_side = SIDE / ROWS
-        self.nodes = []
+        self.node_side = HEIGHT / ROWS
+        self.nodes1 = []
+        self.nodes2 =[]
 
     def make_grid(self, start_node, end_node):
         """ Fills the self.nodes attribute by creating default Node Objects with row, column numbers
         and x,y coordinates """
+        row1, col1 = start_node
+        row2, col2 = end_node
+        # Filling the self.nodes1
         for i in range(self.total_rows):
-            self.nodes.append([])
+            self.nodes1.append([])
             for j in range(self.total_rows):
                 # Column shifting is made possible by j*self.node_size
                 # Row shifting is made possible by i*self.node_size
-                self.nodes[i].append(Node(i, j, j*self.node_side, i*self.node_side))
-        row1, col1 = start_node
-        self.nodes[row1][col1].color = start_color
-        row2, col2 = end_node
-        self.nodes[row2][col2].color = goal_color
+                self.nodes1[i].append(Node(i, j, j * self.node_side, i * self.node_side))
+        self.nodes1[row1][col1].color = start_color
+        self.nodes1[row2][col2].color = goal_color
+        # Filling the self.nodes2
+        for i in range(self.total_rows):
+            self.nodes2.append([])
+            for j in range(self.total_rows):
+                # Column shifting is made possible by j*self.node_size
+                # Row shifting is made possible by i*self.node_size
+                self.nodes2[i].append(Node(i, j, j * self.node_side + self.side, i * self.node_side))
+        self.nodes2[row1][col1].color = start_color
+        self.nodes2[row2][col2].color = goal_color
 
     def draw(self, win):
         """Draws the grid:
@@ -32,12 +43,16 @@ class Grid:
         """
         win.fill(background_color)
         s = self.node_side
-        for row in self.nodes:
+        for row in self.nodes1:
+            for node in row:
+                node.draw(win, s) # Fill each nodes' area with walkable_color
+
+        for row in self.nodes2:
             for node in row:
                 node.draw(win, s) # Fill each nodes' area with walkable_color
 
         # Draw the Edges
-        for row in self.nodes:
+        for row in self.nodes1:
             for node in row:
                 x, y = node.x, node.y
                 r, c = node.row, node.col
@@ -58,6 +73,31 @@ class Grid:
                 if c == self.total_rows - 1 and node.neighbors[1] == 0:
                     pygame.draw.line(win, wall_color,
                                      (x + s, y), (x + s, y + s), width=2)
+
+        # Draw the Edges
+        for row in self.nodes2:
+            for node in row:
+                x, y = node.x, node.y
+                r, c = node.row, node.col
+
+                # UP: 0
+                if node.neighbors[0] == 0:  # = 0 means that there is a wall inbetween
+                    pygame.draw.line(win, wall_color,
+                                     (x, y), (x + s, y), width=2)
+                # LEFT: 3
+                if node.neighbors[3] == 0:  # = 0 means that there is a wall inbetween
+                    pygame.draw.line(win, wall_color,
+                                     (x, y), (x, y + s), width=2)
+                # DOWN: 2
+                if r == self.total_rows - 1 and node.neighbors[2] == 0:
+                    pygame.draw.line(win, wall_color,
+                                     (x, y + s), (x + s, y + s), width=2)
+                # RIGHT: 1
+                if c == self.total_rows - 1 and node.neighbors[1] == 0:
+                    pygame.draw.line(win, wall_color,
+                                     (x + s, y), (x + s, y + s), width=2)
+        pygame.draw.line(win, wall_color, (WIDTH/2, 0), (WIDTH/2, WIDTH/2), width=6)
+
         pygame.display.update()
 
     def maze_generator(self):
@@ -68,7 +108,7 @@ class Grid:
         2. There are no loops.
         3. Walls are represented by the state of 'neighbors'.
         The resulting structure is suitable for pathfinding algorithms like A* and Dijkstra. """
-        current = self.nodes[0][0]
+        current= self.nodes1[0][0]
         visited_nodes, cache = {current}, [current]
         while len(visited_nodes) < self.total_rows*self.total_rows:
             move = [0, 1, 2, 3]
@@ -85,7 +125,7 @@ class Grid:
                 # 0: UP
                 if choice == 0:
                     if current.row > 0: # current.row = 0 means we are already at the top
-                        target = self.nodes[current.row - 1][current.col] # The node at the top
+                        target = self.nodes1[current.row - 1][current.col] # The node at the top
                         if target not in visited_nodes:
                             # If it is not visited, break the barriers of current and target
                             current.neighbors[0] = 1
@@ -98,8 +138,8 @@ class Grid:
                 # 1: RIGHT
                 elif choice == 1:
                     # current.col = len(self.nodes[0]) - 1 means we are at the far right
-                    if current.col < len(self.nodes[0]) - 1:
-                        target = self.nodes[current.row][current.col + 1] # The node at the right
+                    if current.col < len(self.nodes1[0]) - 1:
+                        target = self.nodes1[current.row][current.col + 1] # The node at the right
                         if target not in visited_nodes:
                             # If it is not visited, break the barriers of current and target
                             current.neighbors[1] = 1
@@ -112,8 +152,8 @@ class Grid:
                 # 2: DOWN
                 elif choice == 2:
                     # current.row = len(self.nodes) - 1 means we are at the bottom
-                    if current.row < len(self.nodes) - 1:
-                        target = self.nodes[current.row + 1][current.col] # The node at the bottom
+                    if current.row < len(self.nodes1) - 1:
+                        target = self.nodes1[current.row + 1][current.col] # The node at the bottom
                         if target not in visited_nodes:
                             # If it is not visited, break the barriers of current and target
                             current.neighbors[2] = 1
@@ -127,7 +167,7 @@ class Grid:
                 elif choice == 3:
                     # current.col = 0 means we are at the far left
                     if current.col > 0:
-                        target = self.nodes[current.row][current.col - 1] # The node at the left
+                        target = self.nodes1[current.row][current.col - 1] # The node at the left
                         if target not in visited_nodes:
                             # If it is not visited, break the barriers of current and target
                             current.neighbors[3] = 1
@@ -136,8 +176,12 @@ class Grid:
                             current = target
                             visited_nodes.add(current)
                             moved = True
-
                 if moved:
                     break  # We moved already, we are ready to exit the loop
                 else:
                     move.remove(choice)  # We haven't moved, delete that direction and continue
+
+        # The maze needs to be copied to self.nodes2 to create identical mazes
+        for i in range(self.total_rows):
+            for j in range(self.total_rows):
+                self.nodes2[i][j].neighbors = self.nodes1[i][j].neighbors

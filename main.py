@@ -1,10 +1,10 @@
 import pygame
-from settings import SIDE, ROWS
+from settings import HEIGHT, WIDTH, ROWS, HEIGHT
 from Grid import Grid
 from algorithms import dijkstra_unweighted
 
-WIN = pygame.display.set_mode((SIDE, SIDE))
-pygame.display.set_caption("A* Path Finding Algorithm")
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Pathfinding Algorithm Visualizer")
 
 
 def main():
