@@ -3,6 +3,7 @@
 
 This project is an interactive visualization tool that generates a perfect maze and solves it using Dijkstra’s Algorithm (left side) and A* Search (right side) simultaneously.
 Its goal is to demonstrate the differences in exploration patterns, efficiency, and path optimality between the two algorithms in a clear, intuitive, and real-time manner.
+<img width="1821" height="955" alt="image" src="https://github.com/user-attachments/assets/4bdea696-1dac-40cb-b185-6165c8ec2e63" />
 
 ## Features
 ### Perfect Maze Generator
